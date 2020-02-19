@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: adc-es-pvc
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc-es
 spec:
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adc-es-svc
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc-es
 spec:
@@ -42,7 +42,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adc-es
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc-es
 spec:
@@ -86,7 +86,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: adc-mysql-pvc
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc-mysql
 spec:
@@ -102,7 +102,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adc-mysql-svc
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc-mysql
 spec:
@@ -120,7 +120,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adc-mysql
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc-mysql
 spec:
@@ -170,7 +170,7 @@ spec:
 kind: PersistentVolumeClaim
 metadata:
   name: adc-pvc
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc
 spec:
@@ -186,7 +186,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adc-svc
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc
 spec:
@@ -233,14 +233,14 @@ data:
   server_port: "8080"
 metadata:
   name: adc-configmap
-  namespace: adc
+  namespace: adc-test
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adc
-  namespace: adc
+  namespace: adc-test
   labels:
     k8s-app: adc
 spec:
