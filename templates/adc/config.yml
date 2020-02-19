@@ -1,8 +1,0 @@
-name: Artery Developer Community
-description: |
-  adc cluster
-version: 1.0.0
-category: adc
-maintainer: "liuzhenzhen <liuzhenzhen@thunisoft.com>"
-license: adc:v1.0.0
-projectURL: http://code.thunisoft.com/artery/adc.git
