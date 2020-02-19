@@ -1,0 +1,8 @@
+name: ADC
+description: |
+  Artery Developer Community
+version: 1.0.0
+category: artery #应用商店模板搜索时的目录
+maintainer: "liuzhenzhen <liuzhenzhen@thunisoft.com>"
+license: adc:v1.0.0 #许可类型
+projectURL: http://code.thunisoft.com/artery/adc.git

@@ -1,8 +1,0 @@
-name: Artery Developer Community
-description: |
-  artery-service cluster
-version: 1.0.0
-category: artery-service
-maintainer: "liuzhenzhen <liuzhenzhen@thunisoft.com>"
-license: artery-service:v1.0.0
-projectURL: http://code.thunisoft.com/artery/ArteryService.git

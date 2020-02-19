@@ -1,13 +1,14 @@
 version: '2'
-.catalog:
-  name: "aty-service"
-  version: "v1.0.0"
+catalog:
+  name: "ADC"
+  version: "1.0.0"
   description: |
-    (Experimental) artery-service cluster.
-  minimum_rancher_version: v1.56.0
+    (Experimental) Artery Developer Community
+  minimum_rancher_version: "1.0.0"
+  maximum_rancher_version: "5.0.0"
   maintainer: "liuzhenzhen <liuzhenzhen@thunisoft.com>"
-  uuid: aty-service-0
-artery-service:
+  uuid: adc-0
+adc:
   scale: 1
   start_on_create: true
   labels:

@@ -1,6 +1,6 @@
 version: '2'
 services:
-artery-service:
+adc:
   images: registry.thunisoft.com:5000/artery/service:latest
   hostname: master
   labels:
