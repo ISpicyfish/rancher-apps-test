@@ -1,0 +1,30 @@
+version: '2'
+services:
+artery-service:
+  images: registry.thunisoft.com:5000/artery/service:latest
+  hostname: master
+  labels:
+    k8s-app: service-db
+  networks: 
+    - docker_gwbridge
+  ports: 
+    - "9999:8080"
+  volumes: 
+    - /resource:/resource
+  privileged: true
+  tty: true
+mysql:
+  image: registry.thunisoft.com:5000/artery/db-5:lastest
+  hostname: sdw1
+  labels:
+    k8s-app: service-db
+  networks:
+  - docker_gwbridge
+  ports:
+  - "3304:3306"
+  volumes:
+  - /var/lib/mysql:/var/lib/mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD="root"
+  privileged: true
+  tty: true

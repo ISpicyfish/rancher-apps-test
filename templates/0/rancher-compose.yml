@@ -1,0 +1,21 @@
+version: '2'
+.catalog:
+  name: "aty-service"
+  version: "v1.0.0"
+  description: |
+    (Experimental) artery-service cluster.
+  minimum_rancher_version: v1.56.0
+  maintainer: "liuzhenzhen <liuzhenzhen@thunisoft.com>"
+  uuid: aty-service-0
+artery-service:
+  scale: 1
+  start_on_create: true
+  labels:
+    io.rancher.container.requested_ip: "10.42.200.202"
+    k8s-app: service
+mysql:
+  scale: 1
+  start_on_create: true
+  labels:
+    io.rancher.container.requested_ip: "10.42.200.203"
+    k8s-app: service-db
