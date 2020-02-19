@@ -1,0 +1,385 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adc-es-pvc
+  namespace: adc
+  labels:
+    k8s-app: adc-es
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-storage
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adc-es-svc
+  namespace: adc
+  labels:
+    k8s-app: adc-es
+spec:
+  type: NodePort
+  ports:
+  - name: tcp9200
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+    nodePort: 9205
+  - name: tcp9300
+    port: 9300
+    protocol: TCP
+    targetPort: 9300
+    nodePort: 9305
+  selector:
+    k8s-app: adc-es
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adc-es
+  namespace: adc
+  labels:
+    k8s-app: adc-es
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: adc-es
+  template:
+    metadata:
+      labels:
+        k8s-app: adc-es
+    spec:
+      containers:
+      - name: adc-es
+        image: registry.thunisoft.com:5000/base/elasticsearch6.7.2-adc:latest 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9200
+        env:
+        - name: ES_CLUSTER_NAME
+          value: "adc-search"
+        - name: ES_NODE_NAME
+          value: "adc-search-node1"
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "2"
+            memory: 2Gi
+        volumeMounts:
+          - mountPath: /usr/share/elasticsearch/data
+            name: adc-es
+      volumes:
+        - name: adc-es
+          persistentVolumeClaim:
+            claimName: adc-es-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adc-mysql-pvc
+  namespace: adc
+  labels:
+    k8s-app: adc-mysql
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-storage
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adc-mysql-svc
+  namespace: adc
+  labels:
+    k8s-app: adc-mysql
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+    nodePort: 3313
+  selector:
+    k8s-app: adc-mysql
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adc-mysql
+  namespace: adc
+  labels:
+    k8s-app: adc-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: adc-mysql
+  template:
+    metadata:
+      labels:
+        k8s-app: adc-mysql
+    spec:
+      containers:
+      - name: adc-mysql
+        image: registry.thunisoft.com:5000/base/mysql:5.7-2 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MSQL_INNODB_LOG_FILE_SIZE
+          value: 32M
+        - name: MSQL_KEY_BUFFER_SIZE
+          value: 64M
+        - name: MSQL_MAX_ALLOWED_PACKET
+          value: 100M
+        - name: MSQL_QUERY_CACHE_SIZE
+          value: 64M
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "2"
+            memory: 2Gi
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: adc-mysql
+      volumes:
+        - name: adc-mysql
+          persistentVolumeClaim:
+            claimName: adc-mysql-pvc
+
+            ---
+              apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adc-pvc
+  namespace: adc
+  labels:
+    k8s-app: adc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-storage
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adc-svc
+  namespace: adc
+  labels:
+    k8s-app: adc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    k8s-app: adc
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  cocall_misid: acloud-adc
+  cocall_password: 6a1bb1b579ce
+  cocall_server_avatar_url: http://cocall.thunisoft.com:8888
+  cocall_server_ip: cocall.thunisoft.com
+  cocall_server_url: http://cocall.thunisoft.com:8080
+  cocall_tcp_port: "5300"
+  cocall_udp_port: "6060"
+  db_addr: adc-mysql-svc
+  db_database: db_aty
+  db_password: root
+  db_port: "3306"
+  db_username: root
+  dlcocall_misid: acloud-adc
+  dlcocall_password: 6a1bb1b579ce
+  dlcocall_server_avatar_url: http://dlcocall.thunisoft.com:8888
+  dlcocall_server_ip: dlcocall.thunisoft.com
+  dlcocall_server_url: http://dlcocall.thunisoft.com:8080
+  dlcocall_tcp_port: "5300"
+  dlcocall_udp_port: "6060"
+  es_cluster: adc-search
+  es_ip: adc-es-svc
+  es_port: "9300"
+  java_options: -Xmx3072m
+  server_port: "8080"
+metadata:
+  name: adc-configmap
+  namespace: adc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adc
+  namespace: adc
+  labels:
+    k8s-app: adc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      k8s-app: adc
+  template:
+    metadata:
+      labels:
+        k8s-app: adc
+    spec:
+      containers:
+      - name: adc
+        image: registry.thunisoft.com:5000/artery/artery6-developercommunity:0.0.1-SNAPSHOT
+        ports:
+        - containerPort: 8080
+        env:
+          - name: COCALL_MISID
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_misid
+                name: adc-configmap
+          - name: COCALL_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_password
+                name: adc-configmap
+          - name: COCALL_SERVER_AVATAR_URL
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_server_avatar_url
+                name: adc-configmap
+          - name: COCALL_SERVER_IP
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_server_ip
+                name: adc-configmap
+          - name: COCALL_SERVER_URL
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_server_url
+                name: adc-configmap
+          - name: COCALL_TCP_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_tcp_port
+                name: adc-configmap
+          - name: COCALL_UDP_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_udp_port
+                name: adc-configmap
+          - name: DB_ADDR
+            valueFrom:
+              configMapKeyRef:
+                key: db_addr
+                name: adc-configmap
+          - name: DB_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                key: db_database
+                name: adc-configmap
+          - name: DB_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: db_password
+                name: adc-configmap
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: db_port
+                name: adc-configmap
+          - name: DB_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                key: db_username
+                name: adc-configmap
+          - name: DLCOCALL_MISID
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_misid
+                name: adc-configmap
+          - name: DLCOCALL_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_password
+                name: adc-configmap
+          - name: DLCOCALL_SERVER_AVATAR_URL
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_server_avatar_url
+                name: adc-configmap
+          - name: DLCOCALL_SERVER_IP
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_server_ip
+                name: adc-configmap
+          - name: DLCOCALL_SERVER_URL
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_server_url
+                name: adc-configmap
+          - name: ES_CLUSTER
+            valueFrom:
+              configMapKeyRef:
+                key: es_cluster
+                name: adc-configmap
+          - name: ES_IP
+            valueFrom:
+              configMapKeyRef:
+                key: es_ip
+                name: adc-configmap
+          - name: ES_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: es_port
+                name: adc-configmap
+          - name: JAVA_OPTIONS
+            valueFrom:
+              configMapKeyRef:
+                key: java_options
+                name: adc-configmap
+          - name: SERVER_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: server_port
+                name: adc-configmap
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2048Mi
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+        volumeMounts:
+          - mountPath: /adc-data
+            name: adc
+      volumes:
+      - name: adc
+        persistentVolumeClaim:
+          claimName: adc-pvc  

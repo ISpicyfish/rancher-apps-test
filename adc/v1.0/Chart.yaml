@@ -1,0 +1,19 @@
+apiVersion: v1
+appVersion: "1.0"
+name: ADC #名称
+version: 0.1.0 #模板版本
+tillerVersion: ">=2.7.2-0"
+description: Artery Developer Community，华宇人的技术论坛
+icon: adc.png
+home: https://artery.thunisoft.com/
+keywords:
+  - adc
+  - ADC
+  - Artery Developer Community
+  - 华宇人的技术论坛
+  - 技术论坛
+  - 华宇人
+sources:
+  - http://code.thunisoft.com/artery/adc
+maintainers:
+  - name: liuzhenzhen
