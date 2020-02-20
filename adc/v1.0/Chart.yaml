@@ -4,7 +4,7 @@ appVersion: "1.0"
 name: adc #名称
 version: 0.1.0 #模板版本
 description: Artery Developer Community，华宇人的技术论坛
-icon: ./adc.png
+icon: /adc.png
 home: https://artery.thunisoft.com/
 keywords:
   - adc

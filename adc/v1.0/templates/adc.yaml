@@ -65,12 +65,6 @@ spec:
         - name: ES_NODE_NAME
           value: "adc-search-node1"
         resources:
-          limits:
-            cpu: "2"
-            memory: 2Gi
-          requests:
-            cpu: "2"
-            memory: 2Gi
         volumeMounts:
           - mountPath: /usr/share/elasticsearch/data
             name: adc-es
@@ -148,12 +142,6 @@ spec:
         - name: MSQL_QUERY_CACHE_SIZE
           value: 64M
         resources:
-          limits:
-            cpu: "2"
-            memory: 2Gi
-          requests:
-            cpu: "2"
-            memory: 2Gi
         volumeMounts:
           - mountPath: /var/lib/mysql
             name: adc-mysql
@@ -367,12 +355,6 @@ spec:
                 key: server_port
                 name: adc-configmap
         resources:
-          limits:
-            cpu: "2"
-            memory: 2Gi
-          requests:
-            cpu: "2"
-            memory: 2Gi
         volumeMounts:
           - mountPath: /adc-data
             name: adc
@@ -380,3 +362,25 @@ spec:
       - name: adc
         persistentVolumeClaim:
           claimName: adc-pvc  
+
+##################################################################################################
+# adc ingress
+##################################################################################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: adc-thunisoft-com
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # 开启use-regex，启用path的正则匹配 
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+  - host: adc.thunisoft.com
+    http:
+      paths: 
+      # 不同path转发到不同端口
+      - path: /
+        backend:
+          serviceName: adc-svc
+          servicePort: 8080
