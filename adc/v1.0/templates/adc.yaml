@@ -368,11 +368,11 @@ spec:
                 name: adc-configmap
         resources:
           limits:
-            cpu: 500m
-            memory: 2048Mi
+            cpu: "2"
+            memory: 2Gi
           requests:
-            cpu: 500m
-            memory: 1024Mi
+            cpu: "2"
+            memory: 2Gi
         volumeMounts:
           - mountPath: /adc-data
             name: adc
