@@ -1,8 +1,10 @@
+##################################################################################################
+# es service
+##################################################################################################
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: adc-es-pvc
-  namespace: adc-test
   labels:
     k8s-app: adc-es
 spec:
@@ -18,7 +20,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adc-es-svc
-  namespace: adc-test
   labels:
     k8s-app: adc-es
 spec:
@@ -42,7 +43,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adc-es
-  namespace: adc-test
   labels:
     k8s-app: adc-es
 spec:
@@ -81,12 +81,14 @@ spec:
           persistentVolumeClaim:
             claimName: adc-es-pvc
 
+##################################################################################################
+# mysql service
+##################################################################################################
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: adc-mysql-pvc
-  namespace: adc-test
   labels:
     k8s-app: adc-mysql
 spec:
@@ -102,7 +104,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adc-mysql-svc
-  namespace: adc-test
   labels:
     k8s-app: adc-mysql
 spec:
@@ -120,7 +121,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adc-mysql
-  namespace: adc-test
   labels:
     k8s-app: adc-mysql
 spec:
@@ -164,13 +164,14 @@ spec:
         - name: adc-mysql
           persistentVolumeClaim:
             claimName: adc-mysql-pvc
-
-            ---
-              apiVersion: v1
+##################################################################################################
+# adc service
+##################################################################################################
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: adc-pvc
-  namespace: adc-test
   labels:
     k8s-app: adc
 spec:
@@ -186,7 +187,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adc-svc
-  namespace: adc-test
   labels:
     k8s-app: adc
 spec:
@@ -233,16 +233,15 @@ data:
   server_port: "8080"
 metadata:
   name: adc-configmap
-  namespace: adc-test
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adc
-  namespace: adc-test
   labels:
     k8s-app: adc
+    version: v1
 spec:
   replicas: 2
   selector:
@@ -252,6 +251,7 @@ spec:
     metadata:
       labels:
         k8s-app: adc
+        version: v1
     spec:
       containers:
       - name: adc
