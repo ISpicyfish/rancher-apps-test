@@ -1,0 +1,74 @@
+##################################################################################################
+# es service
+##################################################################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adc-es-pvc
+  labels:
+    k8s-app: adc-es
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-storage
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adc-es-svc
+  labels:
+    k8s-app: adc-es
+spec:
+  type: NodePort
+  ports:
+  - name: tcp9200
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+  - name: tcp9300
+    port: 9300
+    protocol: TCP
+    targetPort: 9300
+  selector:
+    k8s-app: adc-es
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adc-es
+  labels:
+    k8s-app: adc-es
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: adc-es
+  template:
+    metadata:
+      labels:
+        k8s-app: adc-es
+    spec:
+      containers:
+      - name: adc-es
+        image: registry.thunisoft.com:5000/base/elasticsearch6.7.2-adc:latest 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9200
+        env:
+        - name: ES_CLUSTER_NAME
+          value: "adc-search"
+        - name: ES_NODE_NAME
+          value: "adc-search-node1"
+        resources:
+        volumeMounts:
+          - mountPath: /usr/share/elasticsearch/data
+            name: adc-es
+      volumes:
+        - name: adc-es
+          persistentVolumeClaim:
+            claimName: adc-es-pvc

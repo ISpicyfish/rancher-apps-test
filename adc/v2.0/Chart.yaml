@@ -1,0 +1,21 @@
+# A YAML file containing information
+apiVersion: v1 #当前helm api的版本，不需要修改
+appVersion: "2.0"
+name: adc #名称
+version: 0.2.0 #此chart模板版本
+description: Artery Developer Community，华宇人的技术论坛
+icon: http://a6.thunisoft.com/ArteryAPI/images/logo.png
+home: https://artery.thunisoft.com/ #应用程序官网
+keywords: #关键词列表
+  - adc
+  - ADC
+  - Artery Developer Community
+  - 华宇人的技术论坛
+  - 技术论坛
+  - 华宇人
+sources: # 应用程序来源
+  - http://code.thunisoft.com/artery/adc
+engine: gotpl
+maintainers: #维护人员列表
+  - name: liuzhenzhen
+    email: liuzhenzhen@thunisoft.com

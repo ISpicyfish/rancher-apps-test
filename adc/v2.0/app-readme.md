@@ -6,3 +6,7 @@
 这是Artery开发者社区
 
 ## Chart Details
+
+This chart can install multiple components as subcharts:
+- es
+- mysql

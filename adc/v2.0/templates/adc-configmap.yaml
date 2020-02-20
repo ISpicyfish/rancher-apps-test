@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  cocall_misid: acloud-adc
+  cocall_password: 6a1bb1b579ce
+  cocall_server_avatar_url: http://cocall.thunisoft.com:8888
+  cocall_server_ip: cocall.thunisoft.com
+  cocall_server_url: http://cocall.thunisoft.com:8080
+  cocall_tcp_port: "5300"
+  cocall_udp_port: "6060"
+  db_addr: adc-mysql-svc
+  db_database: db_aty
+  db_password: root
+  db_port: "3306"
+  db_username: root
+  dlcocall_misid: acloud-adc
+  dlcocall_password: 6a1bb1b579ce
+  dlcocall_server_avatar_url: http://dlcocall.thunisoft.com:8888
+  dlcocall_server_ip: dlcocall.thunisoft.com
+  dlcocall_server_url: http://dlcocall.thunisoft.com:8080
+  dlcocall_tcp_port: "5300"
+  dlcocall_udp_port: "6060"
+  es_cluster: adc-search
+  es_ip: adc-es-svc
+  es_port: "9300"
+  java_options: -Xmx3072m
+  server_port: "8080"
+metadata:
+  name: adc-configmap

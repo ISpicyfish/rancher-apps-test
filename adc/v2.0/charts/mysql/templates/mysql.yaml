@@ -1,0 +1,75 @@
+##################################################################################################
+# mysql service
+##################################################################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adc-mysql-pvc
+  labels:
+    k8s-app: adc-mysql
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-storage
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adc-mysql-svc
+  labels:
+    k8s-app: adc-mysql
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    k8s-app: adc-mysql
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adc-mysql
+  labels:
+    k8s-app: adc-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: adc-mysql
+  template:
+    metadata:
+      labels:
+        k8s-app: adc-mysql
+    spec:
+      containers:
+      - name: adc-mysql
+        image: registry.thunisoft.com:5000/base/mysql:5.7-2 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MSQL_INNODB_LOG_FILE_SIZE
+          value: 32M
+        - name: MSQL_KEY_BUFFER_SIZE
+          value: 64M
+        - name: MSQL_MAX_ALLOWED_PACKET
+          value: 100M
+        - name: MSQL_QUERY_CACHE_SIZE
+          value: 64M
+        resources:
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: adc-mysql
+      volumes:
+        - name: adc-mysql
+          persistentVolumeClaim:
+            claimName: adc-mysql-pvc

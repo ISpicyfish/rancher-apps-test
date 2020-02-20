@@ -1,0 +1,180 @@
+##################################################################################################
+# adc service
+##################################################################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adc-pvc
+  labels:
+    k8s-app: adc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-storage
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adc-svc
+  labels:
+    k8s-app: adc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    k8s-app: adc
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adc
+  labels:
+    k8s-app: adc
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      k8s-app: adc
+  template:
+    metadata:
+      labels:
+        k8s-app: adc
+        version: v1
+    spec:
+      containers:
+      - name: adc
+        image: registry.thunisoft.com:5000/artery/artery6-developercommunity:0.0.1-SNAPSHOT
+        ports:
+        - containerPort: 8080
+        env:
+          - name: COCALL_MISID
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_misid
+                name: adc-configmap
+          - name: COCALL_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_password
+                name: adc-configmap
+          - name: COCALL_SERVER_AVATAR_URL
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_server_avatar_url
+                name: adc-configmap
+          - name: COCALL_SERVER_IP
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_server_ip
+                name: adc-configmap
+          - name: COCALL_SERVER_URL
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_server_url
+                name: adc-configmap
+          - name: COCALL_TCP_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_tcp_port
+                name: adc-configmap
+          - name: COCALL_UDP_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: cocall_udp_port
+                name: adc-configmap
+          - name: DB_ADDR
+            valueFrom:
+              configMapKeyRef:
+                key: db_addr
+                name: adc-configmap
+          - name: DB_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                key: db_database
+                name: adc-configmap
+          - name: DB_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: db_password
+                name: adc-configmap
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: db_port
+                name: adc-configmap
+          - name: DB_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                key: db_username
+                name: adc-configmap
+          - name: DLCOCALL_MISID
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_misid
+                name: adc-configmap
+          - name: DLCOCALL_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_password
+                name: adc-configmap
+          - name: DLCOCALL_SERVER_AVATAR_URL
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_server_avatar_url
+                name: adc-configmap
+          - name: DLCOCALL_SERVER_IP
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_server_ip
+                name: adc-configmap
+          - name: DLCOCALL_SERVER_URL
+            valueFrom:
+              configMapKeyRef:
+                key: dlcocall_server_url
+                name: adc-configmap
+          - name: ES_CLUSTER
+            valueFrom:
+              configMapKeyRef:
+                key: es_cluster
+                name: adc-configmap
+          - name: ES_IP
+            valueFrom:
+              configMapKeyRef:
+                key: es_ip
+                name: adc-configmap
+          - name: ES_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: es_port
+                name: adc-configmap
+          - name: JAVA_OPTIONS
+            valueFrom:
+              configMapKeyRef:
+                key: java_options
+                name: adc-configmap
+          - name: SERVER_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: server_port
+                name: adc-configmap
+        resources:
+        volumeMounts:
+          - mountPath: /adc-data
+            name: adc
+      volumes:
+      - name: adc
+        persistentVolumeClaim:
+          claimName: adc-pvc  

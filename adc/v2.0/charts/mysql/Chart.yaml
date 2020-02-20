@@ -1,0 +1,15 @@
+apiVersion: v1
+name: mysql
+version: 1.1.0
+appVersion: 1.1.0
+tillerVersion: ">=2.7.2"
+description: mysql for adc
+keywords:
+  - mysql
+  - adc
+  - adc-mysql
+engine: gotpl
+icon: https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike92%2C5%2C5%2C92%2C30/sign=88104ec20df431ada8df4b6b2a5fc7ca/ac6eddc451da81cb037c289d5366d016082431c3.jpg
+maintainers: #维护人员列表
+  - name: liuzhenzhen
+    email: liuzhenzhen@thunisoft.com
